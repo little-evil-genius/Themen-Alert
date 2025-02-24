@@ -12,7 +12,7 @@ Beim Erstellen eines neuen Themas steht unter "Moderations-Optionen" eine zusät
 [ ] Alert verschicken: An alle Accounts ein Alert schicken.<br>
 Wird diese Option aktiviert, wird das Thema als Alert-Thema markiert.
 ### Neuen Beitrag verfassen:
-Bei Beiträgen, die nicht über die Schnellantwort-Funktion erstellt werden, kann festgelegt werden, ob für diesen einzelnen Beitrag (k)eine Benachrichtigung versendet werden soll.
+Bei Beiträgen, die nicht über die Schnellantwort-Funktion erstellt werden, kann individuell festgelegt werden, ob für diesen einzelnen Beitrag (k)eine Benachrichtigung versendet werden soll. Sonst wird auf die Themen-Einstellung zurückgegriffen.
 
 # Vorrausetzung
 - <a href="https://github.com/MyBBStuff/MyAlerts\" target="_blank">MyAlerts</a> von EuanT <b>muss</b> installiert sein.
