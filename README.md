@@ -17,6 +17,9 @@ Bei Beiträgen, die nicht über die Schnellantwort-Funktion erstellt werden, kan
 # Vorrausetzung
 - <a href="https://github.com/MyBBStuff/MyAlerts\" target="_blank">MyAlerts</a> von EuanT <b>muss</b> installiert sein.
 
+# Hinweis
+Im ACP unter Konfiguration > Alert Types sollte bei threadalert_alert der Haken bei "Can be disabled by users?" entfernt werden. Andernfalls könnten Benutzer:innen die Benachrichtigungen selbstständig deaktivieren und würden dann keine Alerts mehr erhalten für neue Beiträge in den Themen.
+
 # Datenbank-Änderungen
 hinzugefügte Spalte in der Tabelle <b>threads</b>:
 - threadalert
