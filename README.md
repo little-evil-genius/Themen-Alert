@@ -1,4 +1,4 @@
-# Themen-Post-Alert
+# Themen-Alert
 Dieses Plugin erweitert das Forum um die Möglichkeit, automatisch Benachrichtigungen (Alerts) an alle Accounts zu senden, wenn in bestimmten Themen neue Beiträge veröffentlicht werden.
 
 # Funktionen
