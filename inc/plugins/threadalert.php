@@ -9,6 +9,7 @@ if(!defined("IN_MYBB"))
 $plugins->add_hook('newthread_start', 'threadalert_newthread');
 $plugins->add_hook('newthread_do_newthread_end', 'threadalert_do_newthread');
 $plugins->add_hook("newreply_start", "threadalert_newreply");
+$plugins->add_hook("showthread_start", "threadalert_newreply");
 $plugins->add_hook("newreply_do_newreply_end", "threadalert_do_newreply");
 $plugins->add_hook('editpost_end', 'threadalert_editpost');
 $plugins->add_hook('editpost_do_editpost_end', 'threadalert_do_editpost');
@@ -20,9 +21,9 @@ $plugins->add_hook('myalerts_register_client_alert_formatters', 'threadalert_reg
 // Die Informationen, die im Pluginmanager angezeigt werden
 function threadalert_info(){
 	return array(
-		"name"		=> "Themen & Post Alert",
-		"description"	=> "Pluginbeschreibung",
-		"website"	=> "https://github.com/little-evil-genius/Themen-Post-Alert",
+		"name"		=> "Themen-Alert",
+		"description"	=> "Erweitert das Forum um die Möglichkeit, automatisch Benachrichtigungen (Alerts) an alle Accounts zu senden, wenn in bestimmten Themen neue Beiträge veröffentlicht werden.",
+		"website"	=> "https://github.com/little-evil-genius/Themen-Alert",
 		"author"	=> "little.evil.genius",
 		"authorsite"	=> "https://storming-gates.de/member.php?action=profile&uid=1712",
 		"version"	=> "1.0",
@@ -42,7 +43,7 @@ function threadalert_install(){
 	// Template Gruppe für jedes Design erstellen
     $templategroup = array(
         "prefix" => "threadalert",
-        "title" => $db->escape_string("Themen & Post Alert"),
+        "title" => $db->escape_string("Themen-Alert"),
     );
     $db->insert_query("templategroups", $templategroup);
     threadalert_templates();
@@ -204,7 +205,7 @@ function threadalert_newreply() {
 // NEUE ANTWORT - SPEICHERN & ALERT
 function threadalert_do_newreply() {
 
-    global $mybb, $db, $thread, $lang, $visible;
+    global $mybb, $db, $thread, $lang, $visible, $threadalert;
 
     // BENACHRICHTIGUNG
     if($visible == 1 && $mybb->get_input('threadalert') == 1){
@@ -272,7 +273,7 @@ function threadalert_editpost() {
     eval("\$threadalertoptions = \"".$templates->get("threadalert_editpost")."\";");
 }
 
-// NEUES THEMA ERÖFFNEN - SPEICHERN
+// THEMA BEARBEITEN (FIRST POST) - SPEICHERN
 function threadalert_do_editpost() {
 
     global $mybb, $db, $tid;
@@ -398,6 +399,14 @@ function threadalert_templates() {
 	$templates[] = array(
         'title'		=> 'threadalert_threadoption',
         'template'	=> $db->escape_string('<br /><label><input type="checkbox" class="checkbox" name="threadalert" value="1"{$threadalert_check} /> {$lang->threadalert_option}</label>'),
+        'sid'		=> '-2',
+        'version'	=> '',
+        'dateline'	=> TIME_NOW
+    );
+
+	$templates[] = array(
+        'title'		=> 'threadalert_quickreply',
+        'template'	=> $db->escape_string('<br /><label><input type="checkbox" class="checkbox" name="threadalert" value="1"{$threadalert_check} /> {$lang->threadalert_quickreply}</label>'),
         'sid'		=> '-2',
         'version'	=> '',
         'dateline'	=> TIME_NOW
