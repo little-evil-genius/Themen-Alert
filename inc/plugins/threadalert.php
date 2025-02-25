@@ -9,7 +9,7 @@ if(!defined("IN_MYBB"))
 $plugins->add_hook('newthread_start', 'threadalert_newthread');
 $plugins->add_hook('newthread_do_newthread_end', 'threadalert_do_newthread');
 $plugins->add_hook("newreply_start", "threadalert_newreply");
-$plugins->add_hook("showthread_start", "threadalert_newreply");
+$plugins->add_hook("showthread_start", "threadalert_showthread");
 $plugins->add_hook("newreply_do_newreply_end", "threadalert_do_newreply");
 $plugins->add_hook('editpost_end', 'threadalert_editpost');
 $plugins->add_hook('editpost_do_editpost_end', 'threadalert_do_editpost');
@@ -101,6 +101,7 @@ function threadalert_activate(){
     require MYBB_ROOT."/inc/adminfunctions_templates.php";
 	find_replace_templatesets('editpost', '#'.preg_quote('{$postoptions}').'#', '{$postoptions} {$threadalertoptions}');
 	find_replace_templatesets('newreply_modoptions', '#'.preg_quote('{$stickoption}').'#', '{$stickoption} {$threadalertoption}');
+	find_replace_templatesets('showthread_quickreply', '#'.preg_quote('{$closeoption}').'#', '{$closeoption} {$threadalertoption}');
 
 }
  
@@ -123,6 +124,7 @@ function threadalert_deactivate(){
     require MYBB_ROOT."/inc/adminfunctions_templates.php";
 	find_replace_templatesets("editpost", "#".preg_quote('{$threadalertoptions}')."#i", '', 0);
 	find_replace_templatesets("newreply_modoptions", "#".preg_quote('{$threadalertoption}')."#i", '', 0);
+	find_replace_templatesets("showthread_quickreply", "#".preg_quote('{$threadalertoption}')."#i", '', 0);
 
 }
 
@@ -172,6 +174,36 @@ function threadalert_do_newthread() {
         'threadalert' => (int)$mybb->get_input('threadalert')
     );
     $db->update_query("threads", $threadalert, "tid='".$tid."'");
+}
+
+// SCHNELLANTWORTBOX - ANZEIGE
+function threadalert_showthread() {
+
+    global $templates, $mybb, $lang, $post_errors, $threadalertoption;
+
+	if ($mybb->usergroup['canmodcp'] != '1') return;
+
+    // Sprachdatei laden
+    $lang->load('threadalert');
+
+    $tid = $mybb->get_input('tid', MyBB::INPUT_INT);
+
+    // previewing new thread?
+    if (isset($mybb->input['previewpost']) || $post_errors) {
+		if ($mybb->get_input('threadalert') == 1) {
+			$threadalert_check = "checked";
+		} else {
+			$threadalert_check = "";
+		}
+    } else {
+        if (get_thread($tid)['threadalert'] == 1) {
+			$threadalert_check = "checked";
+		} else {
+			$threadalert_check = "";
+		}
+    }
+
+    eval("\$threadalertoption = \"".$templates->get("threadalert_quickreply")."\";");
 }
 
 // NEUE ANTWORT - ANZEIGE
