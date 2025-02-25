@@ -96,6 +96,7 @@ function threadalert_activate(){
 		admin_redirect('index.php?module=config-plugins');
 	}
     
+	threadalert_templates();
 
 	// VARIABLEN EINFÜGEN
     require MYBB_ROOT."/inc/adminfunctions_templates.php";
