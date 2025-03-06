@@ -103,7 +103,7 @@ function threadalert_do_newthread() {
 }
 ```
 
-## Alerts nur an den Hauptaccount
+## Alerts nur an den Hauptaccount - Voraussetzung: <a href="https://doylecc.altervista.org/bb/downloads.php?dlid=26&cat=2" target="_blank">Accountswitcher</a> von doylecc
 suche nach:
 ```php
 $user_query = $db->simple_select("users", "uid", "uid != '".$mybb->user['uid']."'");
