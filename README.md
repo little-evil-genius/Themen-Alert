@@ -39,3 +39,77 @@ hinzugefügte Spalte in der Tabelle <b>threads</b>:
 - editpost: {$threadalertoptions}
 - newreply_modoptions: {$threadalertoption}
 - showthread_quickreply: {$threadalertoption}
+
+# manuelle Erweiterungen
+## Alert bei neu Eröffnung vom Thema
+suche nach:
+```php
+function threadalert_do_newthread() {
+
+    global $mybb, $db, $tid;
+
+    $threadalert = array(
+        'threadalert' => (int)$mybb->get_input('threadalert')
+    );
+    $db->update_query("threads", $threadalert, "tid='".$tid."'");
+}
+```
+ersetze es durch:
+```php
+function threadalert_do_newthread() {
+
+    global $mybb, $db, $tid, $lang, $visible;
+
+    $threadalert = array(
+        'threadalert' => (int)$mybb->get_input('threadalert')
+    );
+    $db->update_query("threads", $threadalert, "tid='".$tid."'");
+
+    // BENACHRICHTIGUNG
+    if($visible == 1 && $mybb->get_input('threadalert') == 1){
+
+		// Sprachdatei laden
+		$lang->load('threadalert');
+
+		$thread = get_thread($tid);
+
+        if(class_exists('MybbStuff_MyAlerts_AlertTypeManager')) {
+
+			$user_query = $db->simple_select("users", "uid", "uid != '".$mybb->user['uid']."'");
+			$alluids_array = [];
+			while ($user = $db->fetch_array($user_query)) {
+				$alluids_array[] = $user['uid'];
+			}
+    
+            // Jedem Account
+            foreach ($alluids_array as $uid) {
+                if(class_exists('MybbStuff_MyAlerts_AlertTypeManager')) {
+					$alertType = MybbStuff_MyAlerts_AlertTypeManager::getInstance()->getByCode('threadalert_alert');
+					if ($alertType != NULL && $alertType->getEnabled()) {
+						$alert = new MybbStuff_MyAlerts_Entity_Alert((int)$uid, $alertType, (int)$mybb->user['uid']);
+						$alert->setExtraDetails([
+							'username' => $mybb->user['username'],
+							'from' => $mybb->user['uid'],
+							'tid' => $thread['tid'],
+							'pid' => $thread['firstpost'],
+							'subject' => $thread['subject'],
+						]);
+						MybbStuff_MyAlerts_AlertManager::getInstance()->addAlert($alert);   
+					}
+				}
+            }
+        }
+    }
+}
+```
+
+## Alerts nur an den Hauptaccount
+suche nach:
+```php
+$user_query = $db->simple_select("users", "uid", "uid != '".$mybb->user['uid']."'");
+```
+ersetze es durch:
+```php
+$user_query = $db->simple_select("users", "uid", "uid != '".$mybb->user['uid']."' AND as_uid = '0'");
+```
+(Zeile auch in der manuellen Erweiterung "Alert bei neu Eröffnung vom Thema" vorhanden.)
